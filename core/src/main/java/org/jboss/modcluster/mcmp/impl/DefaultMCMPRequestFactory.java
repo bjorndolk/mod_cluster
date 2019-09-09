@@ -88,11 +88,20 @@ public class DefaultMCMPRequestFactory implements MCMPRequestFactory {
                 saddr = saddr.concat("]");
             }
             parameters.put("Host", saddr);
-        } else {
-            parameters.put("Host", (index > 0) ? address.substring(0, index) : address.substring(1));
+        } else {            
+			if ( System.getProperty("jboss.modcluster.srt-nat-address") != null ) {
+				parameters.put("Host", System.getProperty("jboss.modcluster.srt-nat-address"));	
+			} else {			
+				parameters.put("Host", (index > 0) ? address.substring(0, index) : address.substring(1));
+			}			
         }
-
-        parameters.put("Port", String.valueOf(connector.getPort()));
+		
+		if ( System.getProperty("jboss.modcluster.srt-nat-port") != null ) {
+			parameters.put("Port", System.getProperty("jboss.modcluster.srt-nat-port"));	
+		} else {			
+			parameters.put("Port", String.valueOf(connector.getPort()));
+		}			
+        
         parameters.put("Type", connector.getType().toString());
 
         // Other configuration parameters
